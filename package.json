@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "concurrently": "^4.1.0",
-    "nodemon": "^1.18.10"
+    "nodemon": "^1.18.10",
+    "remote-redux-devtools": "^0.5.16"
   }
 }
