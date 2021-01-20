@@ -1,44 +1,73 @@
 import Axios from 'axios';
-import React from 'react';
+import React, {useEffect} from 'react';
 
-const textQuery = async (text) => {
+function Chatbot() {
 
-    // need to take care of the message I sent
-    let conversation = {
-        who: 'user',
-        content: {
-            text: {
-                text: text  // same format with dialogflow response
-            }
-        }
-    }
+    useEffect(() => {
+        eventQuery('welcomeToMyWebsite');
+    }, [])
 
-    // need to take care of the message Chatbot sent
-    const textQueryVariables = {
-        text    // same with text: text
-    }
-    try {
-        //request to textQuery route
-        const response = await Axios.post('/api/dialogflow/textQuery', textQueryVariables)
-        const content = response.data.fulfillmentMessages[0]
-        conversation = {
-            who: 'bot',
-            content: content
-        }
-        console.log(conversation);
-    } catch (error) {
-        conversation = {
-            who: 'bot',
+    const textQuery = async (text) => {
+
+        // need to take care of the message I sent
+        let conversation = {
+            who: 'user',
             content: {
                 text: {
-                    text: "Error just occured, please check the problem"
+                    text: text  // same format with dialogflow response
+                }
+            }
+        }
+        
+        // need to take care of the message Chatbot sent
+        const textQueryVariables = {
+            text    // same with text: text
+        }
+        try {
+            //request to textQuery route
+            const response = await Axios.post('/api/dialogflow/textQuery', textQueryVariables)
+            const content = response.data.fulfillmentMessages[0]
+            conversation = {
+                who: 'bot',
+                content: content
+            }
+            console.log(conversation);
+        } catch (error) {
+            conversation = {
+                who: 'bot',
+                content: {
+                    text: {
+                        text: "Error just occured, please check the problem"
+                    }
                 }
             }
         }
     }
-}
-
-function Chatbot() {
+    
+    const eventQuery = async (event) => {
+    
+        const eventQueryVariables = {
+            event   
+        }
+        try {
+            const response = await Axios.post('/api/dialogflow/eventQuery', eventQueryVariables)
+            const content = response.data.fulfillmentMessages[0]
+            let conversation = {
+                who: 'bot',
+                content: content
+            }
+            console.log(conversation);
+        } catch (error) {
+            let conversation = {
+                who: 'bot',
+                content: {
+                    text: {
+                        text: "Error just occured, please check the problem"
+                    }
+                }
+            }
+        }
+    }
 
     const keyPressHandler = (e) => {
         if(e.key === "Enter") {
