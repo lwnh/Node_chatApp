@@ -1,4 +1,42 @@
+import Axios from 'axios';
 import React from 'react';
+
+const textQuery = async (text) => {
+
+    // need to take care of the message I sent
+    let conversation = {
+        who: 'user',
+        content: {
+            text: {
+                text: text  // same format with dialogflow response
+            }
+        }
+    }
+
+    // need to take care of the message Chatbot sent
+    const textQueryVariables = {
+        text    // same with text: text
+    }
+    try {
+        //request to textQuery route
+        const response = await Axios.post('/api/dialogflow/textQuery', textQueryVariables)
+        const content = response.data.fulfillmentMessages[0]
+        conversation = {
+            who: 'bot',
+            content: content
+        }
+        console.log(conversation);
+    } catch (error) {
+        conversation = {
+            who: 'bot',
+            content: {
+                text: {
+                    text: "Error just occured, please check the problem"
+                }
+            }
+        }
+    }
+}
 
 function Chatbot() {
 
@@ -9,7 +47,7 @@ function Chatbot() {
             }
 
             // send request to textQuery route
-            //textQuery(e.target.value);
+            textQuery(e.target.value);
             e.target.value = "";
         }
     }
